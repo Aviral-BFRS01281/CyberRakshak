@@ -30,3 +30,14 @@ function requestFingerprint(Request $request) : string
         [$request->method(), $request->route()->uri(), implode("|", array_keys($request->query()))]
     ));
 }
+
+function getRequestUrlHash(Request $request, $detected_fields) {
+    return sha1(implode('|',
+        [$request->method(), implode("|", array_keys($detected_fields))]
+    ));
+}
+
+function getGenericUrl($url) {
+    return preg_replace('/\/(\d+)\/?/', '/*/', $url);
+}
+

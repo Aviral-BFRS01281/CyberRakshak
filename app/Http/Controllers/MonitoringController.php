@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\External\LogRequest;
-use App\Models\RequestPii;
+use App\Models\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -17,7 +17,7 @@ class MonitoringController extends APIController
     {
         try
         {
-            $instance = RequestPii::findWithURL($request->url);
+            $instance = Request::findWithURL($request->url);
 
             $instance->logs()->create([
                 "user_id" => $request->userId,
@@ -27,7 +27,7 @@ class MonitoringController extends APIController
         }
         catch (ValidationException $exception)
         {
-
+            
         }
         catch (\Throwable $exception)
         {
