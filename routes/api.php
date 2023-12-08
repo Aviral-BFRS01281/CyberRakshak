@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get("test", function (\Illuminate\Http\Request $request) {
+    dd(requestFingerprint($request));
+});
+
 Route::prefix("external")->middleware([])->group(function () {
     Route::prefix("pii")->group(function () {
         Route::post("check", [PIIValidationController::class, "check"]);

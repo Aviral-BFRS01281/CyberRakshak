@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 
 /**
  * Gets all the PII fields with their respective scores.
@@ -14,4 +16,17 @@ function piiFieldMap() : array
         "email" => 5,
         "credit_card" => 120
     ];
+}
+
+/**
+ * Generate a unique fingerprint for the request.
+ *
+ * @param Request $request
+ * @return string
+ */
+function requestFingerprint(Request $request) : string
+{
+    return sha1(implode('|',
+        [$request->method(), $request->route()->uri(), implode("|", array_keys($request->query()))]
+    ));
 }
