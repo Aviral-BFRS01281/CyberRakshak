@@ -4,20 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up() : void
     {
-        Schema::create('pii_logs', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedInteger('user_id')->index();
-            $table->unsignedDouble('pii_score');
-            $table->json('pii_data')->comment('Pii Data');
+        Schema::create("pii_logs", function (Blueprint $table) {
+            $table->bigIncrements("id");
+            $table->unsignedBigInteger("user_id")->index();
+            $table->unsignedDouble("score");
+            $table->json("meta");
             $table->timestamps();
         });
     }
@@ -27,8 +26,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down() : void
     {
-        Schema::dropIfExists('pii_logs');
+        Schema::dropIfExists("pii_logs");
     }
 };

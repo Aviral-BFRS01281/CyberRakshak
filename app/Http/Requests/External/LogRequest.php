@@ -4,6 +4,12 @@ namespace App\Http\Requests\External;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property string $url
+ * @property integer $userId
+ * @property string $ip
+ * @property array $meta
+ */
 class LogRequest extends FormRequest
 {
     /**
@@ -19,5 +25,15 @@ class LogRequest extends FormRequest
             "ip" => ["required", "ip"],
             "meta" => ["sometimes", "array"]
         ];
+    }
+
+    public function getHashedURL() : ?string
+    {
+        return sha1($this->url);
+    }
+
+    public function getMeta() : array
+    {
+        return $this->meta ?? [];
     }
 }
