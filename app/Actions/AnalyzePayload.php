@@ -24,6 +24,10 @@ class AnalyzePayload implements Actionable
         {
             $this->source = $payload->toArray();
         }
+        else
+        {
+            $this->source = $payload;
+        }
     }
 
     public function do() : int

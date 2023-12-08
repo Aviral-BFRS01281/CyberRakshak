@@ -14,7 +14,7 @@ function piiFieldMap() : array
         "name" => 2,
         "mobile" => 10,
         "email" => 5,
-        "credit_card" => 120
+        "awb" => 120
     ];
 }
 
