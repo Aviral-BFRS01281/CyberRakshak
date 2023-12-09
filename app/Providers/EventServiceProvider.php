@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\PiiBreached;
+use App\Events\SendPiiBreachedAlert;
+use App\Listeners\CreatePiiDashboardAlert;
+use App\Listeners\SendPiiAlertOnSlack;
+use App\Listeners\SendPiiAlertOnTelegram;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +22,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+        PiiBreached::class => [
+            CreatePiiDashboardAlert::class,
+            SendPiiAlertOnTelegram::class,
+            SendPiiAlertOnSlack::class
+        ]
     ];
 
     /**

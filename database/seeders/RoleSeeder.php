@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Models\Role;
-use App\Models\Models\UserRole;
+use App\Models\Role;
+use App\Models\UserRole;
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder

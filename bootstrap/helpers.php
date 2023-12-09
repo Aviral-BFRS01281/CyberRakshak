@@ -1,9 +1,10 @@
 <?php
 
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+
 const TIMESTAMP_STANDARD = "Y-m-d H:i:s";
-use GuzzleHttp\Client;
 
 /**
  * Gets all the PII fields with their respective scores.
@@ -39,12 +40,14 @@ function getRequestUrlHash($payload, $detected_fields) {
     ));
 }
 
-function getGenericUrl($url) {
+function getGenericUrl($url)
+{
     return preg_replace('/\/(\d+)\/?/', '/*/', $url);
 }
 
-function getSrAwbData($awbs) {
-    $url = config('endpoints.SR_BASE_URL').config('endpoints.GET_AWB_DATA');
+function getSrAwbData($awbs)
+{
+    $url = config('endpoints.SR_BASE_URL') . config('endpoints.GET_AWB_DATA');
     return Http::get($url, [
         'awb' => $awbs,
         // other parameters as needed
@@ -69,10 +72,27 @@ function sendSlackMultipleNotification($message, $channelName)
 
     // Check the response if needed
     $statusCode = $response->getStatusCode();
-    if ($statusCode === 200) {
+    if ($statusCode === 200)
+    {
         echo "Slack notification sent to channel successfully: $message";
-    } else {
+    }
+    else
+    {
         echo "Failed to send Slack notification. Status code: $statusCode";
     }
+}
+
+function getUserDetails(int $userId) : array
+{
+    # return user details
+
+    return [
+
+    ];
+}
+
+function past(int $days = 1) : \Illuminate\Support\Carbon
+{
+    return now()->subDays($days);
 }
 

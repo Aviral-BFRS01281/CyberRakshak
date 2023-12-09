@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Internal\Awbs\AwbCollection;
 use App\Http\Resources\Internal\Awbs\AwbDetailResource;
 use App\Http\Resources\Internal\Users\UserCollection;
 use App\Http\Resources\NullResource;
-use App\Models\Models\Awb;
+use App\Models\Awb;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,12 +15,38 @@ use Throwable;
 
 class PiiAccessController extends APIController
 {
+    /**
+     * List all PII flagged APIs.
+     *
+     * @param Request $request
+     * @return AwbCollection
+     */
+    public function index(Request $request) : AwbCollection
+    {
+        $awbs = Awb::latest();
+
+        if (!empty($request->awb))
+        {
+            $awbs->where("awb", $request->awb);
+        }
+
+        $awbs = $awbs->get();
+
+        return new AwbCollection($awbs);
+    }
+
+    /**
+     * Show details for the given Awb.
+     *
+     * @param string $awb
+     * @return AwbDetailResource|JsonResponse|NullResource
+     */
     public function show(string $awb) : AwbDetailResource|JsonResponse|NullResource
     {
         try
         {
             $awb = Awb::findByAwb($awb, ["users"])->first();
-            
+
             if ($awb == null)
             {
                 AwbDetailResource::wrap(null);
@@ -31,7 +58,8 @@ class PiiAccessController extends APIController
                 AwbDetailResource::wrap("awb");
                 $awb_awb_details_data = [];
                 $awb_data = getSrAwbData($awb->awb);
-                if($awb_data->successful() && !empty($awb_data->json()['data'])) {
+                if ($awb_data->successful() && !empty($awb_data->json()['data']))
+                {
                     $awb_details = $awb_data->json()['data'][0];
                     $awb_awb_details_data = [
                         "code" => $awb_details["awb"],
@@ -46,7 +74,7 @@ class PiiAccessController extends APIController
                 }
                 $users = (new UserCollection($awb->users));
                 $response = (new AwbDetailResource($awb))->additional([
-                    "history" => $users,"awb" => $awb_awb_details_data
+                    "history" => $users, "awb" => $awb_awb_details_data
                 ]);
             }
         }
@@ -65,6 +93,12 @@ class PiiAccessController extends APIController
         return $response;
     }
 
+    /**
+     * Download a report for the given Awb.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function download(Request $request) : JsonResponse
     {
         try

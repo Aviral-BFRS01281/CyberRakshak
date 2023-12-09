@@ -21,6 +21,7 @@ class BreachedPIIScreens implements Actionable
             ->where("pii_access.created_at", ">", now()->subDay()->startOfDay()->format(TIMESTAMP_STANDARD))
             ->groupBy("requests.id")
             ->orderBy("severity", "DESC")
+            ->limit(10)
             ->get();
 
         $requests = $requests->transform(function (Request $request) use (&$map) {

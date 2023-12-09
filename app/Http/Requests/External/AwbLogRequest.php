@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property integer $userId
  * @property string $ip
  * @property array $meta
+ * @property string $awb
  */
 class AwbLogRequest extends FormRequest
 {
@@ -23,7 +24,8 @@ class AwbLogRequest extends FormRequest
             "url" => ["required", "string", "min:4"],
             "userId" => ["required", "integer", "min:0"],
             "ip" => ["required", "ip"],
-            "meta" => ["sometimes", "array"]
+            "meta" => ["sometimes", "array"],
+            "awb" => [""]
         ];
     }
 
