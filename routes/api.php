@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BehaviourAnalyticsController;
+use App\Http\Controllers\GenerateCsvController;
 use App\Http\Controllers\InsightsController;
 use App\Http\Controllers\PiiAccessController;
 use App\Http\Controllers\PiiLoggingController;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::prefix("internal")->middleware([])->group(function () {
-
     # Auth
     Route::prefix("auth")->group(function () {
         Route::post("login", [AuthController::class, "login"]);
@@ -35,6 +35,7 @@ Route::prefix("internal")->middleware([])->group(function () {
     Route::prefix("users")->group(function () {
         Route::get("{id}/analytics", [BehaviourAnalyticsController::class, "show"]);
     });
+    Route::get("generate-csv", [GenerateCsvController::class, "generateCsv"]);
 
 });
 
@@ -48,3 +49,4 @@ Route::prefix("external")->middleware([])->group(function () {
     });
 
 });
+

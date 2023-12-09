@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Http;
 const TIMESTAMP_STANDARD = "Y-m-d H:i:s";
 
 
@@ -41,5 +41,13 @@ function getRequestUrlHash(Request $request, $detected_fields) {
 
 function getGenericUrl($url) {
     return preg_replace('/\/(\d+)\/?/', '/*/', $url);
+}
+
+function getSrAwbData($awbs) {
+    $url = config('endpoints.SR_BASE_URL').config('endpoints.GET_AWB_DATA');
+    return Http::get($url, [
+        'awb' => $awbs,
+        // other parameters as needed
+    ]);
 }
 
