@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use League\Csv\Writer;
 class GenerateCsvController extends APIController
 {
-    public function generateCsv(Request $request) {
+    public function downloadAwbReport(Request $request) {
         if(empty($request->awb)) {
             return $this->respondWithBadRequest(["message" => "AWB is required"]);
         }
