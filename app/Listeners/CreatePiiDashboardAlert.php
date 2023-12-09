@@ -23,6 +23,8 @@ class CreatePiiDashboardAlert
             ->where("created_at", ">", past())
             ->first();
 
+        $next = true;
+
         if ($lastTriggered != null)
         {
             $lastAccessed = abs(now()->diffInMinutes($lastTriggered->created_at));
@@ -37,7 +39,7 @@ class CreatePiiDashboardAlert
             }
             else
             {
-                return true;
+                $next = false;
             }
         }
         else
@@ -47,8 +49,8 @@ class CreatePiiDashboardAlert
                 "type" => $payload->type,
                 "trigger_value" => $payload->value,
             ]);
-
-            return true;
         }
+
+        return $next;
     }
 }
