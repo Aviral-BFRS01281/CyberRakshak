@@ -10,13 +10,12 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
+    public function up() : void
     {
-        Schema::create("pii_fields", function (Blueprint $table) {
-            $table->bigIncrements("id");
-            $table->string("name");
-            $table->double("score");
-            $table->timestamps();
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string("key", 25);
+            $table->string("name", 25);
         });
     }
 
@@ -25,8 +24,8 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
+    public function down() : void
     {
-        Schema::dropIfExists("pii_fields_scores");
+        Schema::dropIfExists('roles');
     }
 };

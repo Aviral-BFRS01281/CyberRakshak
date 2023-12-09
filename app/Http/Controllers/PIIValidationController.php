@@ -6,6 +6,7 @@ use App\Actions\AnalyzePayload;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Request as Requests;
 use Throwable;
 
 class PIIValidationController extends APIController
@@ -25,13 +26,18 @@ class PIIValidationController extends APIController
             $instance = new AnalyzePayload($payload, piiFieldMap());
 
             $score = $instance->do();
-
             if ($score > 0)
             {
                 $response = [
                     "message" => "Given data contains some PII.",
                     "score" => $score
                 ];
+                $data = [
+                    "url" => $request->route()->uri(),
+                    "url_hash" => getRequestUrlHash($request, array_unique($instance->getDetectedFields())),
+                    "score" => $score
+                ];
+                Requests::createRequestPii($data);
             }
             else
             {

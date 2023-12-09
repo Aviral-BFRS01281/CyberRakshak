@@ -10,12 +10,14 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function up()
+    public function up() : void
     {
-        Schema::create("pii_fields", function (Blueprint $table) {
+        Schema::create("requests", function (Blueprint $table) {
             $table->bigIncrements("id");
-            $table->string("name");
-            $table->double("score");
+            $table->string("url", 2000);
+            $table->string("url_hash", 64)->generatedAs("sha1(url)")->index();
+            $table->unsignedTinyInteger("score")->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -25,8 +27,8 @@ return new class extends Migration {
      *
      * @return void
      */
-    public function down()
+    public function down() : void
     {
-        Schema::dropIfExists("pii_fields_scores");
+        Schema::dropIfExists("request_logs");
     }
 };

@@ -10,6 +10,8 @@ class AnalyzePayload implements Actionable
 
     protected array $source = [];
 
+    protected array $detected = [];
+
     /**
      * Create a new instance with the given data to analyze with the given fields.
      *
@@ -21,6 +23,10 @@ class AnalyzePayload implements Actionable
         if ($payload instanceof Arrayable)
         {
             $this->source = $payload->toArray();
+        }
+        else
+        {
+            $this->source = $payload;
         }
     }
 
@@ -36,8 +42,16 @@ class AnalyzePayload implements Actionable
         array_walk_recursive($this->source, function ($value, $key) {
             if (isset($this->fields[$key]))
             {
+                $this->detected[$key] = $key;
+
                 $this->score += $this->fields[$key];
             }
         });
+    }
+
+    public function getDetectedFields()
+    {
+        $this->recursivePIIAnalyser();
+        return $this->detected;
     }
 }
