@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Models\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserRole extends Model
+class Alert extends Model
 {
     use HasFactory;
-
-    public $incrementing = false;
-
-    public $timestamps = false;
 }

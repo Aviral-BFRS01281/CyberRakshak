@@ -19,9 +19,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('hello', function() {
-    return "Hello world";
-});
 Route::prefix("internal")->middleware([])->group(function () {
     # Auth
     Route::prefix("auth")->group(function () {
@@ -31,6 +28,7 @@ Route::prefix("internal")->middleware([])->group(function () {
     # Dashboard[AWB Insights]
     Route::prefix("dashboard")->group(function () {
         Route::get("insights", [InsightsController::class, "show"]);
+        Route::get("awbs", [PiiAccessController::class, "index"]);
         Route::get("awbs/{awb}", [PiiAccessController::class, "show"]);
     });
 
@@ -38,8 +36,9 @@ Route::prefix("internal")->middleware([])->group(function () {
     Route::prefix("users")->group(function () {
         Route::get("{id}/analytics", [BehaviourAnalyticsController::class, "show"]);
     });
-    Route::get("download-awb-report", [GenerateCsvController::class, "downloadAwbReport"]);
 
+    # PII Incident Report
+    Route::get("download-awb-report", [DownloadAwbReportController::class, "download"]);
 });
 
 Route::prefix("external")->middleware([])->group(function () {

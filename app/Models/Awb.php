@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Models\Models;
+namespace App\Models;
 
 use App\Library\Model;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -22,5 +21,10 @@ class Awb extends Model
     public static function findByAwb(string $awb, array $with = []) : Builder
     {
         return static::query()->with($with)->where("awb", $awb);
+    }
+
+    public static function latest(int $daysInPast = 1, array $with = []) : Builder
+    {
+        return static::query()->with($with)->where("created_at", ">", now()->subDays($daysInPast)->startOfDay()->format(TIMESTAMP_STANDARD));
     }
 }
