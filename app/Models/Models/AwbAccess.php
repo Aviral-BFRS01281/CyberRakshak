@@ -10,4 +10,6 @@ class AwbAccess extends Model
     use HasFactory;
 
     protected $table = "awb_access";
+
+
 }

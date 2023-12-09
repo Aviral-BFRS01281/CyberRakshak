@@ -12,7 +12,12 @@ class UserResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,
-            "last_active" => $this->last_active
+            "last_active" => $this->last_active,
+            "mobile" => $this->mobile,
+            "timestamps" => [
+                "created" => $this->whenPivotLoaded("awb_access", fn() => date(TIMESTAMP_STANDARD, strtotime($this->pivot->created_at))),
+                "updated" => $this->whenPivotLoaded("awb_access", fn() => date(TIMESTAMP_STANDARD, strtotime($this->pivot->updated_at))),
+            ]
         ];
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Internal\Awbs\AwbDetailResource;
 use App\Http\Resources\Internal\Users\UserCollection;
+use App\Http\Resources\NullResource;
 use App\Models\Models\Awb;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,16 +14,28 @@ use Throwable;
 
 class PiiAccessController extends APIController
 {
-    public function show(string $awb)
+    public function show(string $awb) : AwbDetailResource|JsonResponse|NullResource
     {
         try
         {
-            # Disabling outer wrapping as this is flat set.
-            UserCollection::withoutWrapping();
-
             $awb = Awb::findByAwb($awb, ["users"])->first();
 
-            return (new UserCollection($awb->users));
+            if ($awb == null)
+            {
+                AwbDetailResource::wrap(null);
+
+                $response = new NullResource("awb entry");
+            }
+            else
+            {
+                AwbDetailResource::wrap("awb");
+
+                $users = (new UserCollection($awb->users));
+
+                $response = (new AwbDetailResource($awb))->additional([
+                    "history" => $users
+                ]);
+            }
         }
         catch (Throwable $exception)
         {

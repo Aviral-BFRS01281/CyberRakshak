@@ -16,7 +16,7 @@ class Awb extends Model
 
     public function users() : BelongsToMany
     {
-        return $this->belongsToMany(User::class, AwbAccess::class, "awb_id", "user_id");
+        return $this->belongsToMany(User::class, AwbAccess::class, "awb_id", "user_id")->withPivot(["created_at", "updated_at"]);
     }
 
     public static function findByAwb(string $awb, array $with = []) : Builder
