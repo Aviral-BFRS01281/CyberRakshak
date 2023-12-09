@@ -92,13 +92,20 @@ function sendSlackMultipleNotification($message, $channelName)
     }
 }
 
-function getUserDetails(int $userId) : array
+function getUserDetails(array $userIds) : array
 {
-    # return user details
+    return Cache::remember(implode("|", $userIds) . "_user_details", 60 * 10, function () use ($userIds) {
+        $response = (new Shiprocket())->getUserDetails($userIds);
 
-    return [
+        $record = $response->array ?? [];
 
-    ];
+        if ($response->code != Response::HTTP_OK || $record == null)
+        {
+            throw (new Exception("Users details API returned non-200."));
+        }
+
+        return $record;
+    });
 }
 
 function past(int $days = 1) : \Illuminate\Support\Carbon

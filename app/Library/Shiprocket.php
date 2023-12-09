@@ -125,4 +125,9 @@ class Shiprocket
     {
         return $this->call("get-user-statistics", []);
     }
+
+    public function getUserDetails(array $userIds) : object
+    {
+        return $this->call("get-user-details", $userIds);
+    }
 }
