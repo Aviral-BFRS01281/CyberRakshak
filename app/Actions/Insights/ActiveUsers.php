@@ -9,8 +9,12 @@ class ActiveUsers implements Actionable
     public function do() : array
     {
         return [
-            ["name" => "Admins", "count" => 22],
-            ["name" => "Others", "count" => 55],
+            [
+                "name" => "Admin",
+                "text" => null,
+                "value" => getInternalUserStatistics()["active_user_count"] ?? 0,
+                "type" => "number"
+            ],
         ];
     }
 }

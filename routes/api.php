@@ -49,4 +49,3 @@ Route::prefix("external")->middleware([])->group(function () {
         Route::post("awbs/log", [PiiLoggingController::class, "logAwb"]);
     });
 });
-

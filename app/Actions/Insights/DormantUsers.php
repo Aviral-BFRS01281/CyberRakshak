@@ -8,9 +8,27 @@ class DormantUsers implements Actionable
 {
     public function do() : array
     {
+        $stats = getInternalUserStatistics();
+
         return [
-            ["name" => "Admins", "count" => 22],
-            ["name" => "Others", "count" => 55],
+            [
+                "name" => "Not Logged In",
+                "text" => "(since last 30 days)",
+                "value" => $stats["last_30_days_active"] ?? 0,
+                "type" => "number"
+            ],
+            [
+                "name" => "Logged In",
+                "text" => "(after 30 days)",
+                "value" => $stats["last_30_days_inactive"] ?? 0,
+                "type" => "number"
+            ],
+            [
+                "name" => "Viewed PII Details",
+                "text" => null,
+                "value" => dormantPiiIncidentsInLast30Days(),
+                "type" => "number"
+            ]
         ];
     }
 }

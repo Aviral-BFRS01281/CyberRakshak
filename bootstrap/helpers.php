@@ -1,8 +1,16 @@
 <?php
 
+use App\Exceptions\ConsumerException;
+use App\Http\Resources\Internal\Journey\JourneyCollection;
+use App\Library\Shiprocket;
+use App\Models\AwbAccess;
+use App\Models\PiiAccess;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\Response;
 
 const TIMESTAMP_STANDARD = "Y-m-d H:i:s";
 
@@ -97,3 +105,61 @@ function past(int $days = 1) : \Illuminate\Support\Carbon
     return now()->subDays($days);
 }
 
+function getInternalUserStatistics()
+{
+    return Cache::remember("internal_user_statistics", 60 * 60, function () {
+        $response = (new Shiprocket())->getInternalUserStatistics();
+
+        $record = $response->array ?? [
+            "active_user_count" => 0,
+            "last_30_days_active" => 0,
+            "last_30_days_inactive" => 0,
+            "admin_ids" => [],
+            "inactive_ids_in_30_days" => []
+        ];
+
+        if ($response->code != Response::HTTP_OK || $record == null)
+        {
+            throw (new Exception("Internal users API returned non-200."));
+        }
+
+        return $record;
+    });
+}
+
+function dormantPiiIncidentsInLast30Days()
+{
+    $stats = getInternalUserStatistics();
+
+    $inactiveIds = $stats["inactive_ids_in_30_days"] ?? [];
+
+    return AwbAccess::query()
+        ->select([DB::raw("count(id) as inactive_count")])
+        ->whereIn("user_id", $inactiveIds)
+        ->where("created_at", ">", past(30))
+        ->first()->inactive_count ?? 0;
+}
+
+function getUserJourneyMap(int $userId)
+{
+    return Cache::remember($userId . "_journey_map", 60 * 10, function () {
+        return new JourneyCollection(PiiAccess::query()
+            ->with("request")
+            ->where("created_at", ">", past(30))
+            ->orderBy("created_at", "DESC")
+            ->get());
+    });
+}
+
+function getUserRiskHistory(int $userId)
+{
+    return Cache::remember($userId . "_risk_history", 60 * 10, function () use ($userId) {
+        return DB::table("awb_access")->select([
+            DB::raw("count(id) as hits"),
+            "created_at as at"
+        ])
+            ->groupBy("created_at")
+            ->where("user_id", $userId)
+            ->where("created_at", ">", past(90))->get();
+    });
+}
