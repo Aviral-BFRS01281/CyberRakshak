@@ -42,7 +42,7 @@ class AnalyzePayload implements Actionable
         array_walk_recursive($this->source, function ($value, $key) {
             if (isset($this->fields[$key]))
             {
-                $this->detected[] = [];
+                $this->detected[$key] = $key;
 
                 $this->score += $this->fields[$key];
             }
@@ -51,6 +51,7 @@ class AnalyzePayload implements Actionable
 
     public function getDetectedFields()
     {
-
+        $this->recursivePIIAnalyser();
+        return $this->detected;
     }
 }
