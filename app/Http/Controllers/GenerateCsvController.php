@@ -1,19 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Http\Requests\External\LogRequest;
-use App\Models\Request as Requests;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Http;
 use League\Csv\Writer;
 class GenerateCsvController extends APIController
 {
     public function generateCsv(Request $request) {
         if(empty($request->awb)) {
-            return;
+            return $this->respondWithBadRequest(["message" => "AWB is required"]);
         }
         $response = getSrAwbData($request->awb);
         // Check if the request was successful (status code 2xx)
