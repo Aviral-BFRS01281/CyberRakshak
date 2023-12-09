@@ -40,7 +40,18 @@ class Request extends Model
      */
     public static function findWithURL(string $url) : Request|Model|null
     {
-        return Request::query()->find($url);
+        return Request::query()->where("url", $url)->first();
+    }
+
+    /**
+     * Get the request instance for the given URL.
+     *
+     * @param string $hash
+     * @return Request|Model|null
+     */
+    public static function findWithHash(string $hash) : Request|Model|null
+    {
+        return Request::query()->where("url_hash", $hash)->first();
     }
 
     public function logs() : HasMany

@@ -21,9 +21,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('', function() {
-    return "Hello world";
-});
+Route::post('/test', function (\Illuminate\Http\Request $request) {
+    return [
+        "name" => "Aviral",
+        "mobile" => "9888",
+        "yoyo" => "zozo"
+    ];
+})->middleware(\App\Http\Middleware\PiiMiddleware::class);
+
+
 Route::prefix("internal")->middleware([])->group(function () {
     # Auth
     Route::prefix("auth")->group(function () {
@@ -37,8 +43,8 @@ Route::prefix("internal")->middleware([])->group(function () {
         Route::get("awbs/{awb}", [PiiAccessController::class, "show"]);
     });
 
-     # Settings
-     Route::prefix("settings")->group(function () {
+    # Settings
+    Route::prefix("settings")->group(function () {
         Route::get("/", [SettingController::class, "getSetting"]);
         Route::post("/update", [SettingController::class, "updateSetting"]);
     });

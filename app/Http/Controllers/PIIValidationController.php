@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Actions\AnalyzePayload;
-use App\Models\Request as Requests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -23,33 +22,41 @@ class PIIValidationController extends APIController
         {
             $payload = $request->all();
 
-            $instance = new AnalyzePayload($payload, piiFieldMap());
+            $instance = new AnalyzePayload($payload["body"], piiFieldMap());
 
             $score = $instance->do();
 
             if ($score > 0)
             {
-                $response = [
-                    "message" => "Given data contains some PII.",
-                    "score" => $score
-                ];
+                $fingerprint = sha1(implode('|',
+                    [$payload["verb"], $payload["url"], implode("|", $payload["params"])]
+                ));
 
-                $data = [
-                    "url" => $payload["url"],
-                    "url_hash" => getRequestUrlHash($payload, array_unique($instance->getDetectedFields())),
-                    "score" => $score
-                ];
+                $entry = \App\Models\Request::findWithHash($fingerprint);
 
-                Requests::createRequestPii($data);
+                if ($entry == null)
+                {
+                    \App\Models\Request::query()->create([
+                        "url" => $payload["url"],
+                        "url_hash" => $fingerprint,
+                        "score" => $score
+                    ]);
+                }
+
+                $response = $this->respondWithCreated([
+                    "message" => "Some PII was detected in the payload.",
+                    "score" => $score,
+                    "detected" => $instance->getDetectedFields()
+                ]);
             }
             else
             {
-                $response = [
-                    "message" => "No PII was found in the request.",
-                    "score" => $score
-                ];
+                $response = $this->respondWithOkay([
+                    "message" => "No PII was found in the payload.",
+                    "score" => $score,
+                    "detected" => []
+                ]);
             }
-            $response = $this->respondWithOkay($response);
         }
         catch (Throwable $throwable)
         {
