@@ -19,6 +19,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('', function() {
+    return "Hello world";
+});
 Route::prefix("internal")->middleware([])->group(function () {
     # Auth
     Route::prefix("auth")->group(function () {
