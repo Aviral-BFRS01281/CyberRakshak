@@ -6,6 +6,7 @@ use App\Http\Controllers\PiiAccessController;
 use App\Http\Controllers\PiiLoggingController;
 use App\Http\Controllers\PIIValidationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GenerateCsvController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::prefix("internal")->middleware([])->group(function () {
-
     # Auth
     Route::prefix("auth")->group(function () {
         Route::post("login", [AuthController::class, "login"]);
@@ -29,6 +29,8 @@ Route::prefix("internal")->middleware([])->group(function () {
         Route::get("insights", [InsightsController::class, "show"]);
         Route::get("awbs/{awb}", [PiiAccessController::class, "show"]);
     });
+
+    Route::get("generate-csv", [GenerateCsvController::class, "generateCsv"]);
 
 });
 
@@ -42,3 +44,4 @@ Route::prefix("external")->middleware([])->group(function () {
     });
 
 });
+
