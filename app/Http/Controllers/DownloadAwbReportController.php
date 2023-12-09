@@ -18,12 +18,11 @@ class DownloadAwbReportController extends APIController
      * @throws CannotInsertRecord
      * @throws ValidationException
      */
-    public function download(Request $request) : JsonResponse
+    public function download(Request $request)
     {
         $this->validate($request, [
             "awb" => ["required", "string", "min:2"]
         ]);
-
         $response = getSrAwbData($request->awb);
 
         if ($response->successful())
