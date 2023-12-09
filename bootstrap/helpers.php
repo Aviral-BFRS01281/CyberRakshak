@@ -80,6 +80,7 @@ function sendSlackMultipleNotification($message, $channelName)
 
     // Check the response if needed
     $statusCode = $response->getStatusCode();
+
     if ($statusCode === 200)
     {
         echo "Slack notification sent to channel successfully: $message";
