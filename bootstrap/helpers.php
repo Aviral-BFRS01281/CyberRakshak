@@ -74,11 +74,11 @@ function sendSlackMultipleNotification($message, $channelName)
     $statusCode = $response->getStatusCode();
     if ($statusCode === 200)
     {
-        echo "Slack notification sent to channel successfully: $message";
+        \Log::info("Slack notification sent to channel successfully: $message");
     }
     else
     {
-        echo "Failed to send Slack notification. Status code: $statusCode";
+        \Log::error("Failed to send Slack notification. Status code: $statusCode");
     }
 }
 
@@ -96,3 +96,31 @@ function past(int $days = 1) : \Illuminate\Support\Carbon
     return now()->subDays($days);
 }
 
+function sendTelegramMessage($chatId, $message) {
+    try {
+        $botToken = config("endpoints.TELEGRAM_BOT_TOKEN");
+        $base_url = config("endpoints.TELEGRAM_API_BASE_URL");
+        $url = $base_url."/bot".$botToken."/sendMessage?";
+        $params = ['chat_id' => $chatId, 'text' => $message];
+        \Log::info("sendTelegramMessage", ['botToken' => $botToken, 'base_url' => $base_url, 'url' => $url]);
+        $response = file_get_contents($url . http_build_query($params) );
+      /*  $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        $result = json_decode($response, true);
+        if (!empty($result['ok'])) {
+            \Log::info('Message sent successfully!' . PHP_EOL);
+        } else {
+            \Log::info('Failed to send message Error '.$result['description']);
+        }
+        curl_close($ch); */
+    }catch(\Exception $e) {
+        \Log::info("sendTelegramMessage_error",[
+            'trace' => $e->getTrace(),
+            'message' => $e->getMessage()
+        ]);
+    }
+}
