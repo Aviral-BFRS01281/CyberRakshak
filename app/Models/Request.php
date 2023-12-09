@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class RequestPii extends Model
+/**
+ * @property integer $id
+ * @property string $url
+ * @property string $url_hash
+ * @property integer $score
+ */
+class Request extends Model
 {
     use HasFactory;
 
@@ -20,7 +26,7 @@ class RequestPii extends Model
 
     public static function createRequestPii($data) : void
     {
-        $is_request_exist = RequestPii::where("request_id", $data["request_id"])->first();
+        $is_request_exist = Request::where("request_id", $data["request_id"])->first();
         if (empty($is_request_exist))
         {
             $requestData = [
@@ -30,7 +36,7 @@ class RequestPii extends Model
                 'email' => !empty($data['email']) ? 1 : 0,
                 'awb' => !empty($data['awb']) ? 1 : 0,
             ];
-            RequestPii::create($requestData);
+            Request::create($requestData);
         }
     }
 
@@ -38,13 +44,11 @@ class RequestPii extends Model
      * Get the request instance for the given URL.
      *
      * @param string $url
-     * @return RequestPii|Model|null
+     * @return Request|Model|null
      */
-    public static function findWithURL(string $url) : RequestPii|Model|null
+    public static function findWithURL(string $url) : Request|Model|null
     {
-        $hash = sha1($url);
-
-        return RequestPii::query()->find($hash);
+        return Request::query()->find($url);
     }
 
     public function logs() : HasMany

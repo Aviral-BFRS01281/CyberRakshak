@@ -10,7 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property string $ip
  * @property array $meta
  */
-class LogRequest extends FormRequest
+class AwbLogRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -21,22 +21,15 @@ class LogRequest extends FormRequest
     {
         return [
             "url" => ["required", "string", "min:4"],
-            "verb" => ["required", "string", "in:GET,POST,PUT,HEAD,OPTIONS,DELETE"],
-            "user_id" => ["required", "integer", "min:0"],
-            "params" => ["sometimes", "array"],
-            "ip" => ["sometimes", "string", "min:8", "max:15"],
+            "userId" => ["required", "integer", "min:0"],
+            "ip" => ["required", "ip"],
             "meta" => ["sometimes", "array"]
         ];
     }
 
-    public function getGenerateURL() : ?string
-    {
-        return vsprintf("%s|%s|%s", [$this->url, $this->verb, implode("|", $this->params)]);
-    }
-
     public function getHashedURL() : ?string
     {
-        return sha1($this->getGenerateURL());
+        return sha1($this->url);
     }
 
     public function getMeta() : array

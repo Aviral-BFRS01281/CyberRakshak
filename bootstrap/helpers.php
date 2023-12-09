@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 
+const TIMESTAMP_STANDARD = "Y-m-d H:i:s";
+
 
 /**
  * Gets all the PII fields with their respective scores.
