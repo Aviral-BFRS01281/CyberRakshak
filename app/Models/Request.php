@@ -20,15 +20,13 @@ class Request extends Model
 
     public static function createRequestPii($data) : void
     {
-        $is_request_exist = Request::where("request_id", $data["request_id"])->first();
+        $is_request_exist = Request::where("url_hash", $data["url_hash"])->first();
         if (empty($is_request_exist))
         {
             $requestData = [
-                'request_id' => $data['request_id'],
-                'name' => !empty($data['name']) ? 1 : 0,
-                'mobile' => !empty($data['mobile']) ? 1 : 0,
-                'email' => !empty($data['email']) ? 1 : 0,
-                'awb' => !empty($data['awb']) ? 1 : 0,
+                'url' => $data['url'],
+                'url_hash' => $data['url_hash'],
+                'score' => $data['score']
             ];
             Request::create($requestData);
         }
