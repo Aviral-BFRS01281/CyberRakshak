@@ -3,6 +3,8 @@
 namespace App\Actions\Insights;
 
 use App\Actions\Actionable;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class HighRiskUsers implements Actionable
 {
@@ -17,11 +19,26 @@ class HighRiskUsers implements Actionable
 
     public function do() : array
     {
-        return [
-            ["user_id" => 2, "name" => "Aviral", "email" => "aviral@shiprocket.com"],
-            ["user_id" => 3, "name" => "Vinod", "email" => "vinod@shiprocket.com"],
-            ["user_id" => 4, "name" => "Richa", "email" => "richa@shiprocket.com"],
-            ["user_id" => 5, "name" => "Bhupendra", "email" => "bhupendra@shiprocket.com"]
-        ];
+        $users = User::query()
+            ->select(["users.id as id", "users.name as name",
+                "users.email as email", DB::raw("count(pii_access.id) as request_count")
+            ])
+            ->join("pii_access", "pii_access.user_id", "=", "users.id")
+            ->join("requests", "requests.id", "=", "pii_access.request_id")
+            ->where("pii_access.created_at", ">", now()->subDay()->startOfDay()->format(TIMESTAMP_STANDARD))
+            ->groupBy("pii_access.request_id", "pii_access.user_id")
+            ->orderBy("request_count", "DESC")
+            ->limit($this->count)
+            ->get();
+
+        $users = $users->transform(function (User $user) {
+            return [
+                "id" => $user->id,
+                "name" => $user->name,
+                "email" => $user->email,
+            ];
+        });
+
+        return $users->values()->toArray();
     }
 }

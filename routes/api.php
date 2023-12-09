@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BehaviourAnalyticsController;
 use App\Http\Controllers\InsightsController;
 use App\Http\Controllers\PiiAccessController;
 use App\Http\Controllers\PiiLoggingController;
@@ -28,6 +29,11 @@ Route::prefix("internal")->middleware([])->group(function () {
     Route::prefix("dashboard")->group(function () {
         Route::get("insights", [InsightsController::class, "show"]);
         Route::get("awbs/{awb}", [PiiAccessController::class, "show"]);
+    });
+
+    # Users
+    Route::prefix("users")->group(function () {
+        Route::get("{id}/analytics", [BehaviourAnalyticsController::class, "show"]);
     });
 
 });

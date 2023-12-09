@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Models\Awb;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class Runner extends Command
@@ -28,6 +29,6 @@ class Runner extends Command
      */
     public function handle() : void
     {
-        dd(Awb::query()->first()->users);
+        dd(User::query()->first()->hotURLS);
     }
 }

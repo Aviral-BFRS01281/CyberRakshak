@@ -12,11 +12,10 @@ return new class extends Migration {
      */
     public function up() : void
     {
-        Schema::create("pii_logs", function (Blueprint $table) {
-            $table->bigIncrements("id");
-            $table->unsignedBigInteger("user_id")->index();
-            $table->unsignedDouble("score");
-            $table->json("meta");
+        Schema::create('url_tags', function (Blueprint $table) {
+            $table->string("tag")->primary();
+            $table->string("display");
+            $table->string("description")->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration {
      */
     public function down() : void
     {
-        Schema::dropIfExists("pii_logs");
+        Schema::dropIfExists('url_tags');
     }
 };

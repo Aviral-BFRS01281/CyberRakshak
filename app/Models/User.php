@@ -6,6 +6,7 @@ use App\Models\Models\Awb;
 use App\Models\Models\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function roles() : BelongsToMany
     {
         return $this->belongsToMany(Role::class, "user_roles", "role_id", "user_id");
+    }
+
+    public function hotURLs() : HasManyThrough
+    {
+        return $this->hasManyThrough(Request::class, PiiAccess::class, "request_id", "id");
     }
 }

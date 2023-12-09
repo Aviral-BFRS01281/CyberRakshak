@@ -12,13 +12,13 @@ return new class extends Migration {
      */
     public function up() : void
     {
-        Schema::create("requests", function (Blueprint $table) {
+        Schema::create("pii_access", function (Blueprint $table) {
             $table->bigIncrements("id");
-            $table->string("url", 2000);
-            $table->string("url_hash", 64)->generatedAs("sha1(url)")->index();
-            $table->unsignedTinyInteger("score")->default(0);
-            $table->string("tag")->nullable();
-            $table->softDeletes();
+            $table->unsignedBigInteger("user_id")->index();
+            $table->unsignedBigInteger("request_id")->index();
+            $table->string("ip")->nullable();
+            $table->unsignedDouble("score");
+            $table->json("meta");
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration {
      */
     public function down() : void
     {
-        Schema::dropIfExists("requests");
+        Schema::dropIfExists("pii_access");
     }
 };

@@ -16,13 +16,7 @@ class Request extends Model
 {
     use HasFactory;
 
-    protected $table = 'request_piis';
-
     protected $guarded = ["id"];
-
-    protected $primaryKey = "request_id";
-
-    public $incrementing = false;
 
     public static function createRequestPii($data) : void
     {
@@ -53,6 +47,6 @@ class Request extends Model
 
     public function logs() : HasMany
     {
-        return $this->hasMany(PiiLog::class, "request_id", "request_id");
+        return $this->hasMany(PiiAccess::class, "request_id", "request_id");
     }
 }
