@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BehaviourAnalyticsController;
-use App\Http\Controllers\GenerateCsvController;
+use App\Http\Controllers\DownloadAwbReportController;
 use App\Http\Controllers\InsightsController;
 use App\Http\Controllers\PiiAccessController;
 use App\Http\Controllers\PiiLoggingController;
