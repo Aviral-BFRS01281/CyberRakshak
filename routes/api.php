@@ -38,18 +38,16 @@ Route::prefix("internal")->middleware([])->group(function () {
     Route::prefix("users")->group(function () {
         Route::get("{id}/analytics", [BehaviourAnalyticsController::class, "show"]);
     });
-    Route::get("generate-csv", [GenerateCsvController::class, "generateCsv"]);
+    Route::get("download-awb-report", [GenerateCsvController::class, "downloadAwbReport"]);
 
 });
 
 Route::prefix("external")->middleware([])->group(function () {
-
     # PII Validation
     Route::prefix("pii")->group(function () {
         Route::post("check", [PIIValidationController::class, "check"]);
         Route::post("log", [PiiLoggingController::class, "log"]);
         Route::post("awbs/log", [PiiLoggingController::class, "logAwb"]);
     });
-
 });
 
