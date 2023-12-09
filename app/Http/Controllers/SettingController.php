@@ -17,12 +17,12 @@ class SettingController extends APIController
        return $response;
     }
     public function updateSetting(Request $request) {
-        $data = $request->all();
-        foreach($data as $setting) {
-            foreach($setting as $key => $value) {
-                Setting::updateOrCreateSetting($key, $value);
-            }
+        if(empty($request->key)) {
+            return $this->respondWithBadRequest([
+                "message" => "key not found"
+            ]);
         }
+        Setting::updateOrCreateSetting($request->key, $request->value);
         $response = $this->respondWithOkay(['message' => "Setting updated successfully"]);
         return $response;   
     }
