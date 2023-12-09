@@ -17,20 +17,11 @@ class SettingController extends APIController
        return $response;
     }
     public function updateSetting(Request $request) {
-        if(isset($request->plateform_slack)) {
-            Setting::updateOrCreateSetting('plateform_slack', $request->plateform_slack);
-        }
-
-        if(isset($request->plateform_telegram)) {
-            Setting::updateOrCreateSetting('plateform_telegram', $request->plateform_telegram);
-        }
-        
-        if(isset($request->plateform_email)) {
-            Setting::updateOrCreateSetting('plateform_email', $request->plateform_email);
-        }
-
-        if(isset($request->plateform_whatsapp)) {
-            Setting::updateOrCreateSetting('plateform_whatsapp', $request->plateform_whatsapp);
+        $data = $request->all();
+        foreach($data as $setting) {
+            foreach($setting as $key => $value) {
+                Setting::updateOrCreateSetting($key, $value);
+            }
         }
         $response = $this->respondWithOkay(['message' => "Setting updated successfully"]);
         return $response;   
