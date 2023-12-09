@@ -19,7 +19,7 @@ class PiiAccessController extends APIController
         try
         {
             $awb = Awb::findByAwb($awb, ["users"])->first();
-
+            
             if ($awb == null)
             {
                 AwbDetailResource::wrap(null);
@@ -29,11 +29,24 @@ class PiiAccessController extends APIController
             else
             {
                 AwbDetailResource::wrap("awb");
-
+                $awb_awb_details_data = [];
+                $awb_data = getSrAwbData($awb->awb);
+                if($awb_data->successful() && !empty($awb_data->json()['data'])) {
+                    $awb_details = $awb_data->json()['data'][0];
+                    $awb_awb_details_data = [
+                        "code" => $awb_details["awb"],
+                        "company_id" => $awb_details["company_id"],
+                        "company_name" => $awb_details["company_name"],
+                        "courier" => $awb_details["courier"],
+                        "channel" => $awb_details["channel_name"],
+                        "status" => $awb_details["status"],
+                        "shipment_value" => $awb_details["shipment_value"],
+                        "payment_mode" => $awb_details["payment_method"],
+                    ];
+                }
                 $users = (new UserCollection($awb->users));
-
                 $response = (new AwbDetailResource($awb))->additional([
-                    "history" => $users
+                    "history" => $users,"awb" => $awb_awb_details_data
                 ]);
             }
         }
