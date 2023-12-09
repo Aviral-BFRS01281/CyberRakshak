@@ -33,9 +33,9 @@ function requestFingerprint(Request $request) : string
     ));
 }
 
-function getRequestUrlHash(Request $request, $detected_fields) {
+function getRequestUrlHash($payload, $detected_fields) {
     return sha1(implode('|',
-        [$request->method(), implode("|", array_keys($detected_fields))]
+        [getGenericUrl($payload['url']), $payload['method'], $payload['query']]
     ));
 }
 

@@ -26,6 +26,7 @@ class PIIValidationController extends APIController
             $instance = new AnalyzePayload($payload, piiFieldMap());
 
             $score = $instance->do();
+    
             if ($score > 0)
             {
                 $response = [
@@ -33,8 +34,8 @@ class PIIValidationController extends APIController
                     "score" => $score
                 ];
                 $data = [
-                    "url" => $request->route()->uri(),
-                    "url_hash" => getRequestUrlHash($request, array_unique($instance->getDetectedFields())),
+                    "url" => $payload["url"],
+                    "url_hash" => getRequestUrlHash($payload, array_unique($instance->getDetectedFields())),
                     "score" => $score
                 ];
                 Requests::createRequestPii($data);
