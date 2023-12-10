@@ -36,7 +36,8 @@ class HighRiskUsers implements Actionable
                 "id" => $user->id,
                 "name" => $user->name,
                 "email" => $user->email,
-                "role" => $user->roles()->get()->pluck("name")
+                "role" => $user->roles()->get()->pluck("name"),
+                "count" => $user->request_count
             ];
         });
 
