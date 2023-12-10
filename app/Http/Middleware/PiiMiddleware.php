@@ -35,11 +35,7 @@ class PiiMiddleware
 
         $key = "request_fingerprint_{$fingerprint}";
 
-        $body = $resp->getContent();
-
-//        if (!is_array($body))
-//        {
-        $body = json_decode($body);
+        $body = json_decode($resp->getBody()->getContents());
 
         if (json_last_error() != JSON_ERROR_NONE)
         {
@@ -49,7 +45,6 @@ class PiiMiddleware
 
             return;
         }
-//        }
 
         $payload = [
             "url" => $url,
@@ -65,7 +60,7 @@ class PiiMiddleware
 
         if (!Cache::has($key))
         {
-            $response = (new Client())->post("https://api.pidash.dev/external/pii/check", [
+            $response = (new Client())->post("http://api.pidash.dev/external/pii/check", [
                 RequestOptions::JSON => $payload
             ]);
 

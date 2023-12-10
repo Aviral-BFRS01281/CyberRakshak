@@ -21,11 +21,12 @@ class LogRequest extends FormRequest
     {
         return [
             "url" => ["required", "string", "min:4"],
-            "verb" => ["required", "string", "in:GET,POST,PUT,HEAD,OPTIONS,DELETE"],
             "user_id" => ["required", "integer", "min:0"],
-            "params" => ["sometimes", "array"],
-            "ip" => ["sometimes", "string", "min:8", "max:15"],
-            "meta" => ["sometimes", "array"]
+            "ip" => ["required", "ip"],
+            "verb" => ["required", "string", "in:GET,POST,PUT,DELETE,HEAD,OPTIONS"],
+            "meta" => ["sometimes", "array"],
+            "body" => ["requires", "array"],
+            "params" => ["sometimes", "array"]
         ];
     }
 

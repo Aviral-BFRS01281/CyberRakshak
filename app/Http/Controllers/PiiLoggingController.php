@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PiiBreached;
 use App\Http\Requests\External\AwbLogRequest;
 use App\Http\Requests\External\LogRequest;
+use App\Models\Alert;
 use App\Models\Awb;
 use App\Models\Request;
 use App\Models\User;
@@ -23,19 +24,27 @@ class PiiLoggingController extends APIController
     {
         try
         {
-            $instance = Request::findWithURL($request->url);
+            $payload = $request->all();
+
+            $fingerprint = sha1(implode('|',
+                [$payload["verb"], $payload["url"], implode("|", $payload["params"])]
+            ));
+
+            $instance = Request::findWithHash($fingerprint);
 
             if ($instance != null)
             {
                 $instance->logs()->create([
-                    "user_id" => $request->userId,
+                    "request_id" => $instance->id,
+                    "user_id" => $request->user_id,
                     "score" => $instance->score,
-                    "meta" => $request->getMeta()
+                    "meta" => json_encode($request->getMeta())
                 ]);
 
                 $payload = (object)[
-                    "userId" => $request->userId,
-                    "type" => "pii"
+                    "userId" => $request->user_id,
+                    "type" => Alert::TYPE_PII,
+                    "value" => 1
                 ];
 
                 event(
@@ -93,16 +102,23 @@ class PiiLoggingController extends APIController
 
             if ($user == null)
             {
-                $user = User::query()->create(
-                    getUserDetails($request->userId)
-                );
+                $response = getUserDetails([$request->userId]);
+
+                $userDetails = [
+                    "name" => $response["name"],
+                    "email" => $response["email"],
+                    "mobile" => $response["mobile"],
+                    "last_active" => now()->format(TIMESTAMP_STANDARD)
+                ];
+
+                $user = User::query()->create($userDetails);
             }
 
             $user->awbs()->attach($awb);
 
             $payload = (object)[
                 "userId" => $user->id,
-                "type" => "awb"
+                "type" => Alert::TYPE_PII
             ];
 
             event(

@@ -12,11 +12,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $url_hash
  * @property integer $score
  */
-class Request extends Model
+class Request extends \App\Library\Model
 {
     use HasFactory;
 
     protected $guarded = ["id"];
+
+    protected $casts = [
+        "created_at" => "string",
+        "updated_at" => "string",
+        "meta" => "array",
+    ];
 
     public static function createRequestPii($data) : void
     {
@@ -56,6 +62,6 @@ class Request extends Model
 
     public function logs() : HasMany
     {
-        return $this->hasMany(PiiAccess::class, "request_id", "request_id");
+        return $this->hasMany(PiiAccess::class, "id", "request_id");
     }
 }

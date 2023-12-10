@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\AnalyzePayload;
+use App\Http\Requests\External\CheckRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,7 @@ class PIIValidationController extends APIController
      * @param Request $request
      * @return JsonResponse
      */
-    public function check(Request $request) : JsonResponse
+    public function check(CheckRequest $request) : JsonResponse
     {
         try
         {
