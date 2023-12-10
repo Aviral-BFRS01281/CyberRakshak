@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace MultiChanne\Http\Middleware;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;

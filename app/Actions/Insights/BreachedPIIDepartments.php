@@ -24,9 +24,10 @@ class BreachedPIIDepartments implements Actionable
             ])
             ->join("pii_access", "pii_access.user_id", "=", "users.id")
             ->join("requests", "requests.id", "=", "pii_access.request_id")
-            ->where("pii_access.created_at", ">", now()->subDay()->startOfDay()->format(TIMESTAMP_STANDARD))
+            ->where("pii_access.created_at", ">", now()->subDays(30)->startOfDay()->format(TIMESTAMP_STANDARD))
             ->groupBy("pii_access.user_id")
             ->orderBy("severity", "DESC")
+            ->limit(10)
             ->get();
 
         $users->each(function (User $user) use (&$map) {
