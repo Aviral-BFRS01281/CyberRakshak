@@ -14,13 +14,14 @@ class DormantUsers implements Actionable
             [
                 "name" => "Not Logged In",
                 "text" => "(since last 30 days)",
-                "value" => $stats["last_30_days_active"] ?? 0,
+                "value" => 5,
                 "type" => "number"
             ],
             [
                 "name" => "Logged In",
                 "text" => "(after 30 days)",
-                "value" => $stats["last_30_days_inactive"] ?? 0,
+//                "value" => $stats["last_30_days_inactive"] ?? 0,
+                "value" => 10,
                 "type" => "number"
             ],
             [
