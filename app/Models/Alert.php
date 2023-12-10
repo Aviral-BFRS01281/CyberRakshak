@@ -11,6 +11,11 @@ class Alert extends Model
 
     const TYPE_AWB = 1;
 
+    const NAMES = [
+        self::TYPE_PII => "PII",
+        self::TYPE_AWB => "AWB"
+    ];
+
     use HasFactory;
 
     protected $guarded = ["id"];
