@@ -21,21 +21,10 @@ class AwbLogRequest extends FormRequest
     public function rules() : array
     {
         return [
-            "url" => ["required", "string", "min:4"],
-            "userId" => ["required", "integer", "min:0"],
-            "ip" => ["required", "ip"],
+            "awb" => ["required", "string"],
+            "user_id" => ["required", "integer", "min:0"],
             "meta" => ["sometimes", "array"],
-            "awb" => [""]
+            "ip" => ["sometimes", "string"]
         ];
-    }
-
-    public function getHashedURL() : ?string
-    {
-        return sha1($this->url);
-    }
-
-    public function getMeta() : array
-    {
-        return $this->meta ?? [];
     }
 }
