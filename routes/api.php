@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlertController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BehaviourAnalyticsController;
 use App\Http\Controllers\DownloadAwbReportController;
@@ -20,15 +21,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::post('/test', function (\Illuminate\Http\Request $request) {
-    return [
-        "name" => "Aviral",
-        "mobile" => "9888",
-        "yoyo" => "zozo"
-    ];
-})->middleware(\App\Http\Middleware\PiiMiddleware::class);
-
 
 Route::prefix("internal")->middleware([])->group(function () {
     # Auth
@@ -56,6 +48,13 @@ Route::prefix("internal")->middleware([])->group(function () {
 
     # PII Incident Report
     Route::get("download-awb-report", [DownloadAwbReportController::class, "download"]);
+
+    # Alerts
+    Route::prefix("alerts")->group(function () {
+        Route::get("/", [AlertController::class, "index"]);
+        Route::get("{id}", [AlertController::class, "show"]);
+        Route::post("{id}", [AlertController::class, "update"]);
+    });
 });
 
 Route::prefix("external")->middleware([])->group(function () {

@@ -45,7 +45,7 @@ class User extends Authenticatable
 
     public function awbs() : BelongsToMany
     {
-        return $this->belongsToMany(Awb::class, User::class)->withPivot(["created_at", "updated_at"]);
+        return $this->belongsToMany(Awb::class, AwbAccess::class)->withPivot(["created_at", "updated_at"]);
     }
 
     public function roles() : BelongsToMany

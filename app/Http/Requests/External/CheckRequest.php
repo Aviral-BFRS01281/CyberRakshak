@@ -19,8 +19,8 @@ class CheckRequest extends FormRequest
             "ip" => ["required", "ip"],
             "verb" => ["required", "string", "in:GET,POST,PUT,DELETE,HEAD,OPTIONS"],
             "meta" => ["sometimes", "array"],
-            "body" => ["requires", "array"],
-            "params" => ["sometimes", "array"]
+            "body" => ["required", "array"],
+            "query" => ["sometimes", "array"]
         ];
     }
 }

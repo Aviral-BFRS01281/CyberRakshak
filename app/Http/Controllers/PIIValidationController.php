@@ -14,7 +14,7 @@ class PIIValidationController extends APIController
     /**
      * Checks whether the give data contains any PII.
      *
-     * @param Request $request
+     * @param CheckRequest $request
      * @return JsonResponse
      */
     public function check(CheckRequest $request) : JsonResponse
@@ -30,7 +30,7 @@ class PIIValidationController extends APIController
             if ($score > 0)
             {
                 $fingerprint = sha1(implode('|',
-                    [$payload["verb"], $payload["url"], implode("|", $payload["params"])]
+                    [$payload["verb"], $payload["url"], implode("|", $payload["query"])]
                 ));
 
                 $entry = \App\Models\Request::findWithHash($fingerprint);

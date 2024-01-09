@@ -15,6 +15,6 @@ class SendPiiAlertOnSlack
      */
     public function handle(PiiBreached $event) : void
     {
-        sendSlackMultipleNotification(vsprintf("Alert triggered for %s", [Alert::NAMES[$event->getPayload()->type] ?? "N/A"]), "cybersafeview");
+//        sendSlackMultipleNotification(vsprintf("Alert triggered for %s", [Alert::NAMES[$event->getPayload()->type] ?? "N/A"]), "cybersafeview");
     }
 }

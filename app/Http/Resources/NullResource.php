@@ -6,6 +6,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class NullResource extends JsonResource
 {
+    public static $wrap = null;
+
     public function __construct(protected string $entity = "entry")
     {
         parent::__construct(null);

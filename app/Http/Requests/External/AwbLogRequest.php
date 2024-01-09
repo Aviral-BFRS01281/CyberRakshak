@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property string $url
- * @property integer $userId
+ * @property integer $user_id
  * @property string $ip
  * @property array $meta
  * @property string $awb

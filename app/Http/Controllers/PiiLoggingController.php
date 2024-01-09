@@ -27,7 +27,7 @@ class PiiLoggingController extends APIController
             $payload = $request->all();
 
             $fingerprint = sha1(implode('|',
-                [$payload["verb"], $payload["url"], implode("|", $payload["params"])]
+                [$payload["verb"], $payload["url"], implode("|", $payload["query"])]
             ));
 
             $instance = Request::findWithHash($fingerprint);
@@ -98,11 +98,11 @@ class PiiLoggingController extends APIController
                 ]);
             }
 
-            $user = User::query()->find($request->userId);
+            $user = User::query()->find($request->user_id);
 
             if ($user == null)
             {
-                $response = getUserDetails([$request->userId]);
+                $response = getUserDetails([$request->user_id]);
 
                 $userDetails = [
                     "name" => $response["name"],
@@ -118,7 +118,8 @@ class PiiLoggingController extends APIController
 
             $payload = (object)[
                 "userId" => $user->id,
-                "type" => Alert::TYPE_PII
+                "type" => Alert::TYPE_PII,
+                "value" => 1
             ];
 
             event(
