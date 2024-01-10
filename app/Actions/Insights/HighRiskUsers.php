@@ -20,6 +20,7 @@ class HighRiskUsers implements Actionable
     public function do() : array
     {
         $users = User::query()
+            ->with("roles")
             ->select(["users.id as id", "users.name as name",
                 "users.email as email", DB::raw("count(pii_access.id) as request_count")
             ])

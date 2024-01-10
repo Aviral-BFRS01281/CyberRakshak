@@ -28,6 +28,6 @@ class Runner extends Command
      */
     public function handle() : void
     {
-        dd(User::query()->first()->hotURLS);
+        dd(User::query()->first()->hotURLs);
     }
 }
