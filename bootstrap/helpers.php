@@ -1,10 +1,10 @@
 <?php
 
-use App\Exceptions\ConsumerException;
 use App\Http\Resources\Internal\Journey\JourneyCollection;
 use App\Library\Shiprocket;
 use App\Models\AwbAccess;
 use App\Models\PiiAccess;
+use App\Models\PiiField;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,12 +21,7 @@ const TIMESTAMP_STANDARD = "Y-m-d H:i:s";
  */
 function piiFieldMap() : array
 {
-    return [
-        "name" => 2,
-        "mobile" => 10,
-        "email" => 5,
-        "awb" => 120
-    ];
+    return PiiField::query()->get()->pluck("score", "name")->toArray();
 }
 
 /**
@@ -94,7 +89,7 @@ function sendSlackMultipleNotification($message, $channelName)
 
 function getUserDetails(array $userIds) : array
 {
-    return Cache::remember(implode("|", $userIds) . "_user_details", 60 * 10, function () use ($userIds) {
+    return Cache::remember(implode("|", $userIds) . "_user_details", 60, function () use ($userIds) {
         $response = (new Shiprocket())->getUserDetails($userIds);
 
         $record = $response->array ?? [];
@@ -115,7 +110,7 @@ function past(int $days = 1) : \Illuminate\Support\Carbon
 
 function getInternalUserStatistics()
 {
-    return Cache::remember("internal_user_statistics", 60 * 60, function () {
+    return Cache::remember("internal_user_statistics", 60, function () {
         $response = (new Shiprocket())->getInternalUserStatistics();
 
         $record = $response->array ?? [
@@ -150,7 +145,7 @@ function dormantPiiIncidentsInLast30Days()
 
 function getUserJourneyMap(int $userId)
 {
-    return Cache::remember($userId . "_journey_map", 60 * 10, function () {
+    return Cache::remember($userId . "_journey_map", 60, function () {
         return new JourneyCollection(PiiAccess::query()
             ->with("request")
             ->where("created_at", ">", past(30))
@@ -161,7 +156,7 @@ function getUserJourneyMap(int $userId)
 
 function getUserRiskHistory(int $userId)
 {
-    return Cache::remember($userId . "_risk_history", 60 * 10, function () use ($userId) {
+    return Cache::remember($userId . "_risk_history", 60, function () use ($userId) {
         return DB::table("awb_access")->select([
             DB::raw("count(id) as hits"),
             "created_at as at"

@@ -28,6 +28,6 @@ class Runner extends Command
      */
     public function handle() : void
     {
-        dd(User::query()->first()->hotURLs);
+        dd(\App\Models\PiiField::query()->get()->pluck("score","name")->toArray());
     }
 }
