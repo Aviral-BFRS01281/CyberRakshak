@@ -72,7 +72,9 @@ class Shiprocket
      */
     protected function call(string $path, array $parameters, string $method = "GET") : object
     {
+//        dd($parameters);
         $url = vsprintf("%s/%s", [$this->baseUrl, $path]);
+//        dd($url);
 
         try
         {
@@ -128,6 +130,6 @@ class Shiprocket
 
     public function getUserDetails(array $userIds) : object
     {
-        return $this->call("get-user-details", $userIds);
+        return $this->call("get-user-details", ["ids" => implode(",",$userIds)]);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Library\Shiprocket;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -28,6 +30,13 @@ class Runner extends Command
      */
     public function handle() : void
     {
-        dd(\App\Models\PiiField::query()->get()->pluck("score","name")->toArray());
+        dd((new Shiprocket())->getUserDetails([1]));
+        $user = User::query()->first();
+        $role = Role::query()->where("key", 'admin')->first();
+
+        if ($role != null)
+        {
+            $user->roles()->attach($role->id);
+        }
     }
 }

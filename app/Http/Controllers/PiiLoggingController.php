@@ -8,8 +8,10 @@ use App\Http\Requests\External\LogRequest;
 use App\Models\Alert;
 use App\Models\Awb;
 use App\Models\Request;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class PiiLoggingController extends APIController
@@ -104,20 +106,32 @@ class PiiLoggingController extends APIController
             {
                 $response = getUserDetails([$request->user_id]);
 
-                $userDetails = [
-                    "name" => $response["name"],
-                    "email" => $response["email"],
-                    "mobile" => $response["mobile"],
-                    "last_active" => now()->format(TIMESTAMP_STANDARD)
-                ];
+                foreach ($response["users"] as $user)
+                {
+                    $userModel = User::query()->create([
+                        "name" => $user["name"],
+                        "email" => $user["email"],
+                        "password" => Hash::make("password@12345"),
+                        "mobile" => $user["mobile"] ?? null,
+                        "last_active" => now()->format(TIMESTAMP_STANDARD)
+                    ]);
 
-                $user = User::query()->create($userDetails);
+                    foreach ($user["roles"] as $role)
+                    {
+                        $role = Role::query()->where("key", $role)->first();
+
+                        if ($role != null)
+                        {
+                            $userModel->roles()->attach($role->id);
+                        }
+                    }
+                }
             }
 
-            $user->awbs()->attach($awb);
+            $userModel->awbs()->save($awb);
 
             $payload = (object)[
-                "userId" => $user->id,
+                "userId" => $userModel->id,
                 "type" => Alert::TYPE_PII,
                 "value" => 1
             ];
